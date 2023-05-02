@@ -1,9 +1,10 @@
 resource "aws_instance" "app_server" {
-  ami           = "ami-02396cdd13e9a1257"
-  instance_type = "t3.nano"
+  ami           = "ami-0d76271a8a1525c1a"
+  instance_type = "t2.micro"
 
   tags = {
     Name  = "ExampleAppServerInstance"
-    Owner = "Vladimir"
+    Owner= "Kiran"
+    
   }
 }
