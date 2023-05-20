@@ -8,7 +8,7 @@ locals {
 resource "aws_vpc" "main" {
     cidr_block = "10.0.0.0/16"
      tags = {
-     Name = "main"
+     Name = "var.env_code"
   }
 }
 
@@ -18,7 +18,7 @@ resource "aws_subnet" "public" {
   cidr_block = local.public_cidr[count.index]
   availability_zone = local.availability_zones[count.index]
   tags = {
-    Name = "public${count.index+1}"
+    Name = "${var.env_code}-public${count.index+1}"
   }
 }
 
@@ -28,7 +28,7 @@ resource "aws_subnet" "private" {
   cidr_block = local.private_cidr[count.index]
   availability_zone = "eu-west-2b"
   tags = {
-    Name = "private${count.index+1}"
+    Name = "${var.env_code}-private${count.index+1}"
   }
 }
 
@@ -36,7 +36,7 @@ resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "main"
+    Name = "${var.env_code}"
   }
 }
 
@@ -51,7 +51,7 @@ resource "aws_route_table" "public" {
 
 
   tags = {
-    Name = "main"
+    Name = "${var.env_code}"
   }
 }
 
@@ -65,7 +65,7 @@ resource "aws_eip" "nat" {
   count = 2
   vpc      = true
   tags = {
-  Name = "main$[count.index+1]"
+  Name = "${var.env_code}-main$[count.index+1]"
 }
 }
 
@@ -75,7 +75,7 @@ resource "aws_nat_gateway" "main" {
   subnet_id     = aws_subnet.public[count.index].id
 
   tags = {
-    Name = "main$[count.index+1]"
+    Name = "${var.env_code}-main$[count.index+1]"
   }
 
   # To ensure proper ordering, it is recommended to add an explicit dependency
@@ -90,7 +90,7 @@ resource "aws_route_table" "private" {
     nat_gateway_id = aws_nat_gateway.main[count.index].id
   }
   tags = {
-    Name = "private${count.index+1}"
+    Name = "${var.env_code}-private${count.index+1}"
   }
 }
 
